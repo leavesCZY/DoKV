@@ -230,7 +230,6 @@ public class PreferencesProcessor extends AbstractProcessor {
                 .addParameter(ClassName.get(variableElement.asType()), fieldName)
                 .addAnnotation(Override.class);
         builder.addStatement("super.$L($L)", setMethodName, fieldName);
-
         builder.addStatement("$L $L = $T.getInstance().getPreferencesHolder().deserialize(KEY, $L.class)", enclosingClassName,
                 serializeObjName, serializeManagerClass, enclosingClassName);
         builder.addStatement("if($L == null) { $L = new $L(); }", serializeObjName, serializeObjName, enclosingClassName);

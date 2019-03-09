@@ -1,5 +1,7 @@
 package leavesc.hello.apt.model;
 
+import android.support.annotation.NonNull;
+
 import leavesc.hello.apt_annotation.preferences.Preferences;
 
 /**
@@ -16,6 +18,9 @@ public class User {
 
     @Preferences
     private int age;
+
+    @Preferences
+    private String sex;
 
     @Preferences
     private Book book;
@@ -36,6 +41,14 @@ public class User {
         this.age = age;
     }
 
+    public String getSex() {
+        return sex;
+    }
+
+    public void setSex(String sex) {
+        this.sex = sex;
+    }
+
     public Book getBook() {
         return book;
     }
@@ -44,11 +57,13 @@ public class User {
         this.book = book;
     }
 
+    @NonNull
     @Override
     public String toString() {
         return "User{" +
                 "name='" + name + '\'' +
                 ", age=" + age +
+                ", sex='" + sex + '\'' +
                 ", book=" + book +
                 '}';
     }

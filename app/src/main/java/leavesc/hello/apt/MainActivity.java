@@ -68,6 +68,7 @@ public class MainActivity extends AppCompatActivity {
                 User user = new User();
                 user.setAge(age);
                 user.setName(userName);
+                user.setSex("xxxx");
                 Book book = new Book();
                 book.setName(bookName);
                 user.setBook(book);

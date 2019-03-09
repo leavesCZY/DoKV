@@ -7,19 +7,14 @@ package leavesc.hello.apt_annotation.preferences;
  * GitHub：https://github.com/leavesC
  * Blog：https://www.jianshu.com/u/9df45b87cfdf
  */
-public class PreferencesManager {
+public enum PreferencesManager {
+
+    INSTANCE;
 
     private IPreferencesHolder preferencesHolder;
 
-    private PreferencesManager() {
-    }
-
     public static PreferencesManager getInstance() {
-        return PreferencesManagerHolder.INSTANCE;
-    }
-
-    private static class PreferencesManagerHolder {
-        private static PreferencesManager INSTANCE = new PreferencesManager();
+        return INSTANCE;
     }
 
     public void setPreferencesHolder(IPreferencesHolder preferencesHolder) {

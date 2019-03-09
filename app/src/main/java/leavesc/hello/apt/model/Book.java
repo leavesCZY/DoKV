@@ -1,5 +1,7 @@
 package leavesc.hello.apt.model;
 
+import android.support.annotation.NonNull;
+
 /**
  * 作者：leavesC
  * 时间：2019/1/5 15:11
@@ -19,6 +21,7 @@ public class Book {
         this.name = name;
     }
 
+    @NonNull
     @Override
     public String toString() {
         return "Book{" +

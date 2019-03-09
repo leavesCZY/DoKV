@@ -16,28 +16,29 @@ import leavesc.hello.apt_annotation.preferences.IPreferencesHolder;
  */
 public class PreferencesMMKVHolder implements IPreferencesHolder {
 
+    private MMKV mmkv = MMKV.defaultMMKV();
+
+    private Gson gson = new Gson();
+
     @Override
     public String serialize(String key, Object src) {
-        String json = new Gson().toJson(src);
-        MMKV kv = MMKV.defaultMMKV();
-        kv.putString(key, json);
+        String json = gson.toJson(src);
+        mmkv.putString(key, json);
         return json;
     }
 
     @Override
     public <T> T deserialize(String key, Class<T> classOfT) {
-        MMKV kv = MMKV.defaultMMKV();
-        String json = kv.decodeString(key, "");
+        String json = mmkv.decodeString(key, "");
         if (!TextUtils.isEmpty(json)) {
-            return new Gson().fromJson(json, classOfT);
+            return gson.fromJson(json, classOfT);
         }
         return null;
     }
 
     @Override
     public void remove(String key) {
-        MMKV kv = MMKV.defaultMMKV();
-        kv.remove(key);
+        mmkv.remove(key);
     }
 
 }
