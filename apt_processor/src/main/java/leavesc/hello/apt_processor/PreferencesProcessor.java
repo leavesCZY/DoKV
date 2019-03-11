@@ -27,7 +27,7 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.util.Elements;
 
-import leavesc.hello.apt_annotation.preferences.Preferences;
+import leavesc.hello.apt_annotation.Preferences;
 import leavesc.hello.apt_processor.utils.ElementUtils;
 import leavesc.hello.apt_processor.utils.StringUtils;
 
@@ -45,7 +45,7 @@ public class PreferencesProcessor extends AbstractProcessor {
 
     private static final String INSTANCE = "INSTANCE";
 
-    private static final ClassName serializeManagerClass = ClassName.get("leavesc.hello.apt_annotation.preferences", "PreferencesManager");
+    private static final ClassName serializeManagerClass = ClassName.get("leavesc.hello.apt_annotation", "DoKV");
 
     @Override
     public synchronized void init(ProcessingEnvironment processingEnv) {

@@ -1,4 +1,4 @@
-package leavesc.hello.apt_annotation.preferences;
+package leavesc.hello.apt_annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

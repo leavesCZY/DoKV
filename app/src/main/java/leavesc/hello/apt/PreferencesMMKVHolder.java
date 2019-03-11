@@ -5,7 +5,7 @@ import android.text.TextUtils;
 import com.google.gson.Gson;
 import com.tencent.mmkv.MMKV;
 
-import leavesc.hello.apt_annotation.preferences.IPreferencesHolder;
+import leavesc.hello.apt_annotation.IPreferencesHolder;
 
 /**
  * 作者：leavesC

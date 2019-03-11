@@ -1,4 +1,4 @@
-package leavesc.hello.apt_annotation.preferences;
+package leavesc.hello.apt_annotation;
 
 /**
  * 作者：leavesC

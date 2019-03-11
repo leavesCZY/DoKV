@@ -2,7 +2,7 @@ package leavesc.hello.apt.model;
 
 import android.support.annotation.NonNull;
 
-import leavesc.hello.apt_annotation.preferences.Preferences;
+import leavesc.hello.apt_annotation.Preferences;
 
 /**
  * 作者：leavesC

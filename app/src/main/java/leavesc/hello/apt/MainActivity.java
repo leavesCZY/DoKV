@@ -11,7 +11,6 @@ import android.widget.TextView;
 import leavesc.hello.apt.model.Book;
 import leavesc.hello.apt.model.User;
 import leavesc.hello.apt.model.UserPreferences;
-import leavesc.hello.apt_annotation.BindView;
 
 /**
  * 作者：leavesC
@@ -22,39 +21,29 @@ import leavesc.hello.apt_annotation.BindView;
  */
 public class MainActivity extends AppCompatActivity {
 
-    @BindView(R.id.et_userName)
-    EditText et_userName;
+    private EditText et_userName;
 
-    @BindView(R.id.et_userAge)
-    EditText et_userAge;
+    private EditText et_userAge;
 
-    @BindView(R.id.et_bookName)
-    EditText et_bookName;
+    private EditText et_bookName;
 
-    @BindView(R.id.btn_serializeAll)
-    Button btn_serializeAll;
+    private Button btn_serializeAll;
 
-    @BindView(R.id.et_singleUserName)
-    EditText et_singleUserName;
+    private EditText et_singleUserName;
 
-    @BindView(R.id.btn_serializeSingle)
-    Button btn_serializeSingle;
+    private Button btn_serializeSingle;
 
-    @BindView(R.id.btn_remove)
-    Button btn_remove;
+    private Button btn_remove;
 
-    @BindView(R.id.btn_print)
-    Button btn_print;
+    private Button btn_print;
 
-    @BindView(R.id.tv_hint)
-    TextView tv_hint;
+    private TextView tv_hint;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-//        ButterKnife.bind(this);
-        MainActivityViewBinding.bind(this);
+        initView();
         btn_serializeAll.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -100,4 +89,17 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
+    private void initView() {
+        et_userName = findViewById(R.id.et_userName);
+        et_userAge = findViewById(R.id.et_userAge);
+        et_bookName = findViewById(R.id.et_bookName);
+        btn_serializeAll = findViewById(R.id.btn_serializeAll);
+        et_singleUserName = findViewById(R.id.et_singleUserName);
+        btn_serializeSingle = findViewById(R.id.btn_serializeSingle);
+        btn_remove = findViewById(R.id.btn_remove);
+        btn_print = findViewById(R.id.btn_print);
+        tv_hint = findViewById(R.id.tv_hint);
+    }
+
 }

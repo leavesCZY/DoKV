@@ -4,7 +4,7 @@ import android.app.Application;
 
 import com.tencent.mmkv.MMKV;
 
-import leavesc.hello.apt_annotation.preferences.PreferencesManager;
+import leavesc.hello.apt_annotation.DoKV;
 
 /**
  * 作者：leavesC
@@ -19,7 +19,8 @@ public class MyApplication extends Application {
     public void onCreate() {
         super.onCreate();
         MMKV.initialize(this);
-        PreferencesManager.getInstance().setPreferencesHolder(new PreferencesMMKVHolder());
+//        PreferencesManager.getInstance().setPreferencesHolder(new PreferencesMMKVHolder());
+        DoKV.init(new PreferencesMMKVHolder());
     }
 
 }
