@@ -19,7 +19,6 @@ public class MyApplication extends Application {
     public void onCreate() {
         super.onCreate();
         MMKV.initialize(this);
-//        PreferencesManager.getInstance().setPreferencesHolder(new PreferencesMMKVHolder());
         DoKV.init(new PreferencesMMKVHolder());
     }
 

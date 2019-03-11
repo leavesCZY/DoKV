@@ -4,6 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:paddingStart="10dp"
+    android:paddingEnd="10dp"
     tools:context=".MainActivity">
 
     <EditText
@@ -17,8 +19,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="用户年龄"
-        android:maxLength="5"
-        android:inputType="number" />
+        android:inputType="number"
+        android:maxLength="5" />
 
     <EditText
         android:id="@+id/et_bookName"

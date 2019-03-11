@@ -8,6 +8,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import leavesc.hello.apt.model.Book;
 import leavesc.hello.apt.model.User;
 import leavesc.hello.apt.model.UserPreferences;
@@ -58,6 +61,11 @@ public class MainActivity extends AppCompatActivity {
                 user.setAge(age);
                 user.setName(userName);
                 user.setSex("xxxx");
+                List<String> stringList = new ArrayList<>();
+                for (int i = 0; i < 4; i++) {
+                    stringList.add(String.valueOf(i));
+                }
+                user.setStringList(stringList);
                 Book book = new Book();
                 book.setName(bookName);
                 user.setBook(book);
