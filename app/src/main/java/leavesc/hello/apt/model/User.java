@@ -2,6 +2,8 @@ package leavesc.hello.apt.model;
 
 import android.support.annotation.NonNull;
 
+import java.util.List;
+
 import leavesc.hello.apt_annotation.Preferences;
 
 /**
@@ -24,6 +26,9 @@ public class User {
 
     @Preferences
     private Book book;
+
+    @Preferences
+    private List<String> stringList;
 
     public String getName() {
         return name;
@@ -57,6 +62,14 @@ public class User {
         this.book = book;
     }
 
+    public List<String> getStringList() {
+        return stringList;
+    }
+
+    public void setStringList(List<String> stringList) {
+        this.stringList = stringList;
+    }
+
     @NonNull
     @Override
     public String toString() {
@@ -65,6 +78,7 @@ public class User {
                 ", age=" + age +
                 ", sex='" + sex + '\'' +
                 ", book=" + book +
+                ", stringList=" + stringList +
                 '}';
     }
 

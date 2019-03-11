@@ -200,9 +200,10 @@ public class PreferencesProcessor extends AbstractProcessor {
         MethodSpec.Builder builder = MethodSpec.methodBuilder(methodName)
                 .addModifiers(Modifier.PUBLIC)
                 .returns(ClassName.get(variableElement.asType()))
-                .addAnnotation(Override.class);
-        builder.addStatement("$L variable = $T.getInstance().getPreferencesHolder().deserialize(KEY, $L.class)", enclosingClassName, serializeManagerClass, enclosingClassName);
-        builder.addStatement("if(variable != null) { return variable.$L(); } return super.$L() ", methodName, methodName);
+                .addAnnotation(Override.class)
+                .addStatement("$L variable = $T.getInstance().getPreferencesHolder().deserialize(KEY, $L.class)",
+                        enclosingClassName, serializeManagerClass, enclosingClassName)
+                .addStatement("if(variable != null) { return variable.$L(); } return super.$L() ", methodName, methodName);
         return builder.build();
     }
 
@@ -228,13 +229,13 @@ public class PreferencesProcessor extends AbstractProcessor {
                 .addModifiers(Modifier.PUBLIC)
                 .returns(void.class)
                 .addParameter(ClassName.get(variableElement.asType()), fieldName)
-                .addAnnotation(Override.class);
-        builder.addStatement("super.$L($L)", setMethodName, fieldName);
-        builder.addStatement("$L $L = $T.getInstance().getPreferencesHolder().deserialize(KEY, $L.class)", enclosingClassName,
-                serializeObjName, serializeManagerClass, enclosingClassName);
-        builder.addStatement("if($L == null) { $L = new $L(); }", serializeObjName, serializeObjName, enclosingClassName);
-        builder.addStatement("$L.$L(super.$L())", serializeObjName, setMethodName, getMethodName);
-        builder.addStatement("$T.getInstance().getPreferencesHolder().serialize(KEY,$L)", serializeManagerClass, serializeObjName);
+                .addAnnotation(Override.class)
+                .addStatement("super.$L($L)", setMethodName, fieldName)
+                .addStatement("$L $L = $T.getInstance().getPreferencesHolder().deserialize(KEY, $L.class)",
+                        enclosingClassName, serializeObjName, serializeManagerClass, enclosingClassName)
+                .addStatement("if($L == null) { $L = new $L(); }", serializeObjName, serializeObjName, enclosingClassName)
+                .addStatement("$L.$L(super.$L())", serializeObjName, setMethodName, getMethodName)
+                .addStatement("$T.getInstance().getPreferencesHolder().serialize(KEY,$L)", serializeManagerClass, serializeObjName);
         return builder.build();
     }
 
@@ -254,9 +255,9 @@ public class PreferencesProcessor extends AbstractProcessor {
         MethodSpec.Builder builder = MethodSpec.methodBuilder(methodName)
                 .addModifiers(Modifier.PUBLIC)
                 .returns(String.class)
-                .addParameter(ClassName.get(typeElement.asType()), fieldName);
-        builder.addStatement("if ($L == null) { $T.getInstance().getPreferencesHolder().remove(KEY); return \"\"; }", fieldName, serializeManagerClass);
-        builder.addStatement("return $T.getInstance().getPreferencesHolder().serialize(KEY, $L)", serializeManagerClass, fieldName);
+                .addParameter(ClassName.get(typeElement.asType()), fieldName)
+                .addStatement("if ($L == null) { $T.getInstance().getPreferencesHolder().remove(KEY); return \"\"; }", fieldName, serializeManagerClass)
+                .addStatement("return $T.getInstance().getPreferencesHolder().serialize(KEY, $L)", serializeManagerClass, fieldName);
         return builder.build();
     }
 
@@ -273,8 +274,8 @@ public class PreferencesProcessor extends AbstractProcessor {
         String methodName = "get" + StringUtils.toUpperCaseFirstChar(enclosingClassName);
         MethodSpec.Builder builder = MethodSpec.methodBuilder(methodName)
                 .addModifiers(Modifier.PUBLIC)
-                .returns(ClassName.get(typeElement.asType()));
-        builder.addStatement("return $T.getInstance().getPreferencesHolder().deserialize(KEY, $L.class)", serializeManagerClass, enclosingClassName);
+                .returns(ClassName.get(typeElement.asType()))
+                .addStatement("return $T.getInstance().getPreferencesHolder().deserialize(KEY, $L.class)", serializeManagerClass, enclosingClassName);
         return builder.build();
     }
 
@@ -288,8 +289,8 @@ public class PreferencesProcessor extends AbstractProcessor {
         String methodName = "remove";
         MethodSpec.Builder builder = MethodSpec.methodBuilder(methodName)
                 .addModifiers(Modifier.PUBLIC)
-                .returns(void.class);
-        builder.addStatement("$T.getInstance().getPreferencesHolder().remove(KEY)", serializeManagerClass);
+                .returns(void.class)
+                .addStatement("$T.getInstance().getPreferencesHolder().remove(KEY)", serializeManagerClass);
         return builder.build();
     }
 
