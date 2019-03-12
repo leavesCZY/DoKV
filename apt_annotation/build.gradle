@@ -13,7 +13,7 @@ publish {
     userOrg = 'leavesc'
     groupId = 'leavesc.hello'
     artifactId = 'dokv'
-    publishVersion = '0.1.2'
+    publishVersion = '0.1.4'
     website = 'https://github.com/leavesC/Android_APT'
     desc = 'An small mobile key-value storage framework'
 }

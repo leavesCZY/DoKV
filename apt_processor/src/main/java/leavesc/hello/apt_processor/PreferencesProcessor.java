@@ -115,7 +115,7 @@ public class PreferencesProcessor extends AbstractProcessor {
                 .addModifiers(Modifier.PUBLIC)
                 .superclass(ClassName.bestGuess(typeElement.getQualifiedName().toString()))
                 .addField(generateKeyField(typeElement))
-                .addType(generateInstanceHolderClass(typeElement))
+                .addMethod(generateConstructorMethod())
                 .addMethod(generateInstanceHolderMethod(typeElement))
                 .addMethod(generateGetPreferencesHolderMethod())
                 .addMethod(generateSerializeMethod(typeElement))
@@ -180,13 +180,16 @@ public class PreferencesProcessor extends AbstractProcessor {
         final String packageName = ElementUtils.getPackageName(elementUtils, typeElement);
         //自动构造的类的类名
         final String enclosingClassName = getGenerateEnclosingClassName(typeElement);
-        //静态内部类类名
-        final String staticClassName = ElementUtils.getStaticClassName(typeElement);
         ClassName className = ClassName.get(packageName, enclosingClassName);
         MethodSpec.Builder methodBuilder = MethodSpec.methodBuilder("get")
                 .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
                 .returns(className)
-                .addStatement("return $L.$L", staticClassName, INSTANCE);
+                .addStatement("return new $L()", enclosingClassName);
+        return methodBuilder.build();
+    }
+
+    private MethodSpec generateConstructorMethod() {
+        MethodSpec.Builder methodBuilder = MethodSpec.constructorBuilder().addModifiers(Modifier.PRIVATE);
         return methodBuilder.build();
     }
 
