@@ -2,13 +2,13 @@ package leavesc.hello.apt_processor;
 
 import com.google.auto.service.AutoService;
 import com.squareup.javapoet.ClassName;
+import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeSpec;
 
 import java.io.IOException;
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -28,6 +28,7 @@ import javax.lang.model.element.VariableElement;
 import javax.lang.model.util.Elements;
 
 import leavesc.hello.apt_annotation.DoKV;
+import leavesc.hello.apt_annotation.IPreferencesHolder;
 import leavesc.hello.apt_annotation.Preferences;
 import leavesc.hello.apt_processor.utils.ElementUtils;
 import leavesc.hello.apt_processor.utils.StringUtils;
@@ -114,9 +115,13 @@ public class PreferencesProcessor extends AbstractProcessor {
                 .addField(generateKeyField(typeElement))
                 .addType(generateInstanceHolderClass(typeElement))
                 .addMethod(generateInstanceHolderMethod(typeElement))
-                .addMethod(generateRemoveKeyMethod())
+                .addMethod(generateGetPreferencesHolderMethod())
+                .addMethod(generateSerializeMethod(generateKeyField(typeElement), typeElement))
+                .addMethod(generateDeserializeMethod(generateKeyField(typeElement), typeElement))
+                .addMethod(generateGetInstanceMethod(typeElement))
+                .addMethod(generateGetInstanceNotNullMethod(typeElement))
                 .addMethod(generateSetInstanceMethod(typeElement))
-                .addMethod(generateGetInstanceMethod(typeElement));
+                .addMethod(generateRemoveKeyMethod(typeElement));
         for (VariableElement variableElement : variableElementList) {
             builder.addMethod(generateGetFieldMethod(typeElement, variableElement));
             builder.addMethod(generateSetFieldMethod(typeElement, variableElement));
@@ -154,7 +159,7 @@ public class PreferencesProcessor extends AbstractProcessor {
         //构建实例变量
         FieldSpec instance = FieldSpec.builder(className, INSTANCE)
                 .addModifiers(Modifier.PRIVATE, Modifier.STATIC, Modifier.FINAL)
-                .initializer(MessageFormat.format("new {0}()", enclosingClassName))
+                .initializer(CodeBlock.builder().addStatement("new $L()", enclosingClassName).build())
                 .build();
         return TypeSpec.classBuilder(staticClassName)
                 .addModifiers(Modifier.PRIVATE, Modifier.STATIC, Modifier.FINAL)
@@ -179,8 +184,135 @@ public class PreferencesProcessor extends AbstractProcessor {
         MethodSpec.Builder methodBuilder = MethodSpec.methodBuilder("get")
                 .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
                 .returns(className)
-                .addCode(MessageFormat.format("return {0}.{1};", staticClassName, INSTANCE));
+                .addStatement("return $L.$L", staticClassName, INSTANCE);
         return methodBuilder.build();
+    }
+
+    /**
+     * 构造用于获取 IPreferencesHolder 实例的方法
+     *
+     * @return IPreferencesHolder
+     */
+    private MethodSpec generateGetPreferencesHolderMethod() {
+        //方法名
+        String methodName = "getPreferencesHolder";
+        MethodSpec.Builder builder = MethodSpec.methodBuilder(methodName)
+                .addModifiers(Modifier.PRIVATE)
+                .returns(IPreferencesHolder.class)
+                .addStatement("return $T.getInstance().getPreferencesHolder()", serializeManagerClass);
+        return builder.build();
+    }
+
+    /**
+     * 构造用于序列化的方法
+     *
+     * @return IPreferencesHolder
+     */
+    private MethodSpec generateSerializeMethod(FieldSpec key, TypeElement parameter) {
+        //方法名
+        String methodName = "serialize";
+        //方法参数名
+        String keyName = "_" + key.name;
+        String fieldName = "_object";
+        MethodSpec.Builder builder = MethodSpec.methodBuilder(methodName)
+                .addModifiers(Modifier.PRIVATE)
+                .returns(String.class)
+                .addParameter(key.type, keyName)
+                .addParameter(ClassName.get(parameter.asType()), fieldName)
+                .addStatement("return getPreferencesHolder().serialize($L, $L)", keyName, fieldName);
+        return builder.build();
+    }
+
+    /**
+     * 构造用于反序列化的方法
+     *
+     * @return MethodSpec
+     */
+    private MethodSpec generateDeserializeMethod(FieldSpec key, TypeElement parameter) {
+        //方法名
+        String methodName = "deserialize";
+        //方法参数名
+        String keyName = "_" + key.name;
+        MethodSpec.Builder builder = MethodSpec.methodBuilder(methodName)
+                .addModifiers(Modifier.PRIVATE)
+                .returns(ClassName.get(parameter))
+                .addParameter(key.type, keyName)
+                .addStatement("return getPreferencesHolder().deserialize($L, $L.class)", keyName, ElementUtils.getEnclosingClassName(parameter));
+        return builder.build();
+    }
+
+    /**
+     * 构造用于获取整个序列化对象的方法，返回值可能为 null
+     *
+     * @param typeElement 注解对象上层元素对象，即 Java 对象
+     * @return
+     */
+    private MethodSpec generateGetInstanceMethod(TypeElement typeElement) {
+        //顶层类类名
+        String enclosingClassName = ElementUtils.getEnclosingClassName(typeElement);
+        //方法名
+        String methodName = "get" + StringUtils.toUpperCaseFirstChar(enclosingClassName);
+        MethodSpec.Builder builder = MethodSpec.methodBuilder(methodName)
+                .addModifiers(Modifier.PUBLIC)
+                .returns(ClassName.get(typeElement.asType()))
+                .addStatement("return deserialize($L)", generateKeyField(typeElement).name);
+        return builder.build();
+    }
+
+    /**
+     * 构造用于获取整个序列化对象的方法，返回值不为 null
+     *
+     * @param typeElement 注解对象上层元素对象，即 Java 对象
+     * @return
+     */
+    private MethodSpec generateGetInstanceNotNullMethod(TypeElement typeElement) {
+        //顶层类类名
+        String enclosingClassName = ElementUtils.getEnclosingClassName(typeElement);
+        //方法名
+        String methodName = "get" + StringUtils.toUpperCaseFirstChar(enclosingClassName) + "NotNull";
+        MethodSpec.Builder builder = MethodSpec.methodBuilder(methodName)
+                .addModifiers(Modifier.PRIVATE)
+                .returns(ClassName.get(typeElement.asType()))
+                .addStatement("$L variable = deserialize($L)", enclosingClassName, generateKeyField(typeElement).name)
+                .addStatement("if(variable != null) { return variable; } return new $L()", enclosingClassName);
+        return builder.build();
+    }
+
+    /**
+     * 构造用于序列化整个对象的方法
+     *
+     * @param typeElement 注解对象上层元素对象，即 Java 对象
+     * @return
+     */
+    private MethodSpec generateSetInstanceMethod(TypeElement typeElement) {
+        //顶层类类名
+        String enclosingClassName = ElementUtils.getEnclosingClassName(typeElement);
+        //方法名
+        String methodName = "set" + StringUtils.toUpperCaseFirstChar(enclosingClassName);
+        //方法参数名
+        String fieldName = "instance";
+        MethodSpec.Builder builder = MethodSpec.methodBuilder(methodName)
+                .addModifiers(Modifier.PUBLIC)
+                .returns(String.class)
+                .addParameter(ClassName.get(typeElement.asType()), fieldName)
+                .addStatement("if($L == null) { remove(); return \"\"; }", fieldName)
+                .addStatement("return serialize($L,$L)", generateKeyField(typeElement).name, fieldName);
+        return builder.build();
+    }
+
+    /**
+     * 构造用于移除该序列化对象的方法
+     *
+     * @return
+     */
+    private MethodSpec generateRemoveKeyMethod(TypeElement typeElement) {
+        //方法名
+        String methodName = "remove";
+        MethodSpec.Builder builder = MethodSpec.methodBuilder(methodName)
+                .addModifiers(Modifier.PUBLIC)
+                .returns(void.class)
+                .addStatement("getPreferencesHolder().remove($L)", generateKeyField(typeElement).name);
+        return builder.build();
     }
 
     /**
@@ -198,12 +330,13 @@ public class PreferencesProcessor extends AbstractProcessor {
         String upperCaseFieldName = StringUtils.toUpperCaseFirstChar(fieldName);
         //方法名
         String methodName = "get" + upperCaseFieldName;
+        //方法名
+        String getInstanceMethodName = "get" + StringUtils.toUpperCaseFirstChar(ElementUtils.getEnclosingClassName(typeElement)) + "()";
         MethodSpec.Builder builder = MethodSpec.methodBuilder(methodName)
                 .addModifiers(Modifier.PUBLIC)
                 .returns(ClassName.get(variableElement.asType()))
                 .addAnnotation(Override.class)
-                .addStatement("$L variable = $T.getInstance().getPreferencesHolder().deserialize(KEY, $L.class)",
-                        enclosingClassName, serializeManagerClass, enclosingClassName)
+                .addStatement("$L variable = $L", enclosingClassName, getInstanceMethodName)
                 .addStatement("if(variable != null) { return variable.$L(); } return super.$L() ", methodName, methodName);
         return builder.build();
     }
@@ -226,72 +359,17 @@ public class PreferencesProcessor extends AbstractProcessor {
         String getMethodName = "get" + upperCaseFieldName;
         //序列化对象名
         String serializeObjName = "_" + StringUtils.toLowerCaseFirstChar(enclosingClassName);
+        //方法名
+        String methodName = "get" + StringUtils.toUpperCaseFirstChar(enclosingClassName) + "NotNull()";
         MethodSpec.Builder builder = MethodSpec.methodBuilder(setMethodName)
                 .addModifiers(Modifier.PUBLIC)
                 .returns(void.class)
                 .addParameter(ClassName.get(variableElement.asType()), fieldName)
                 .addAnnotation(Override.class)
                 .addStatement("super.$L($L)", setMethodName, fieldName)
-                .addStatement("$L $L = $T.getInstance().getPreferencesHolder().deserialize(KEY, $L.class)",
-                        enclosingClassName, serializeObjName, serializeManagerClass, enclosingClassName)
-                .addStatement("if($L == null) { $L = new $L(); }", serializeObjName, serializeObjName, enclosingClassName)
+                .addStatement("$L $L = $L", enclosingClassName, serializeObjName, methodName)
                 .addStatement("$L.$L(super.$L())", serializeObjName, setMethodName, getMethodName)
-                .addStatement("$T.getInstance().getPreferencesHolder().serialize(KEY,$L)", serializeManagerClass, serializeObjName);
-        return builder.build();
-    }
-
-    /**
-     * 构造用于序列化整个对象的方法
-     *
-     * @param typeElement 注解对象上层元素对象，即 Java 对象
-     * @return
-     */
-    private MethodSpec generateSetInstanceMethod(TypeElement typeElement) {
-        //顶层类类名
-        String enclosingClassName = ElementUtils.getEnclosingClassName(typeElement);
-        //方法名
-        String methodName = "set" + StringUtils.toUpperCaseFirstChar(enclosingClassName);
-        //方法参数名
-        String fieldName = "instance";
-        MethodSpec.Builder builder = MethodSpec.methodBuilder(methodName)
-                .addModifiers(Modifier.PUBLIC)
-                .returns(String.class)
-                .addParameter(ClassName.get(typeElement.asType()), fieldName)
-                .addStatement("if ($L == null) { $T.getInstance().getPreferencesHolder().remove(KEY); return \"\"; }", fieldName, serializeManagerClass)
-                .addStatement("return $T.getInstance().getPreferencesHolder().serialize(KEY, $L)", serializeManagerClass, fieldName);
-        return builder.build();
-    }
-
-    /**
-     * 构造用于获取整个序列化对象的方法
-     *
-     * @param typeElement 注解对象上层元素对象，即 Java 对象
-     * @return
-     */
-    private MethodSpec generateGetInstanceMethod(TypeElement typeElement) {
-        //顶层类类名
-        String enclosingClassName = ElementUtils.getEnclosingClassName(typeElement);
-        //方法名
-        String methodName = "get" + StringUtils.toUpperCaseFirstChar(enclosingClassName);
-        MethodSpec.Builder builder = MethodSpec.methodBuilder(methodName)
-                .addModifiers(Modifier.PUBLIC)
-                .returns(ClassName.get(typeElement.asType()))
-                .addStatement("return $T.getInstance().getPreferencesHolder().deserialize(KEY, $L.class)", serializeManagerClass, enclosingClassName);
-        return builder.build();
-    }
-
-    /**
-     * 构造用于移除该序列化对象的方法
-     *
-     * @return
-     */
-    private MethodSpec generateRemoveKeyMethod() {
-        //方法名
-        String methodName = "remove";
-        MethodSpec.Builder builder = MethodSpec.methodBuilder(methodName)
-                .addModifiers(Modifier.PUBLIC)
-                .returns(void.class)
-                .addStatement("$T.getInstance().getPreferencesHolder().remove(KEY)", serializeManagerClass);
+                .addStatement("serialize($L,$L)", generateKeyField(typeElement).name, serializeObjName);
         return builder.build();
     }
 
