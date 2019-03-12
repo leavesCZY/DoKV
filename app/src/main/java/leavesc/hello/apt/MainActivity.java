@@ -1,7 +1,6 @@
 package leavesc.hello.apt;
 
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.View;
@@ -31,6 +30,8 @@ public class MainActivity extends AppCompatActivity {
 
     private EditText et_bookName;
 
+    private EditText et_userSex;
+
     private Button btn_serializeAll;
 
     private EditText et_singleUserName;
@@ -57,18 +58,17 @@ public class MainActivity extends AppCompatActivity {
                 if (!TextUtils.isEmpty(ageStr)) {
                     age = Integer.parseInt(ageStr);
                 }
-                String bookName = et_bookName.getText().toString();
                 User user = new User();
                 user.setAge(age);
                 user.setName(userName);
-                user.setSex("xxxx");
+                user.setSex(et_userSex.getText().toString());
                 List<String> stringList = new ArrayList<>();
                 for (int i = 0; i < 4; i++) {
                     stringList.add(String.valueOf(i));
                 }
                 user.setStringList(stringList);
                 Book book = new Book();
-                book.setName(bookName);
+                book.setName(et_bookName.getText().toString());
                 user.setBook(book);
                 UserPreferences.get().setUser(user);
             }
@@ -95,6 +95,9 @@ public class MainActivity extends AppCompatActivity {
                 } else {
                     tv_hint.setText(user.toString());
                 }
+
+                tv_hint.append("\n");
+                tv_hint.append("Name：" + UserPreferences.get().getName());
             }
         });
     }
@@ -103,6 +106,7 @@ public class MainActivity extends AppCompatActivity {
         et_userName = findViewById(R.id.et_userName);
         et_userAge = findViewById(R.id.et_userAge);
         et_bookName = findViewById(R.id.et_bookName);
+        et_userSex = findViewById(R.id.et_userSex);
         btn_serializeAll = findViewById(R.id.btn_serializeAll);
         et_singleUserName = findViewById(R.id.et_singleUserName);
         btn_serializeSingle = findViewById(R.id.btn_serializeSingle);

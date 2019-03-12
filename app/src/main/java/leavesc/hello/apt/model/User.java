@@ -1,6 +1,7 @@
 package leavesc.hello.apt.model;
 
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
 
 import java.util.List;
 
@@ -21,7 +22,6 @@ public class User {
     @Preferences
     private int age;
 
-    @Preferences
     private String sex;
 
     @Preferences
@@ -31,6 +31,10 @@ public class User {
     private List<String> stringList;
 
     public String getName() {
+        //可以在 get 和 set 方法写一些计算逻辑，Dokv 在保存和获取字段值前都会走一遍 super 方法
+        if (TextUtils.isEmpty(name)) {
+            return "default name";
+        }
         return name;
     }
 
