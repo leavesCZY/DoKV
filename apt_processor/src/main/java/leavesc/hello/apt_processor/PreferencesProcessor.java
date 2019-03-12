@@ -75,19 +75,22 @@ public class PreferencesProcessor extends AbstractProcessor {
         Set<? extends Element> elementSet = roundEnvironment.getElementsAnnotatedWith(Preferences.class);
         Map<TypeElement, List<VariableElement>> elementListHashMap = new HashMap<>();
         for (Element element : elementSet) {
-            //因为 Preferences 的作用对象是 FIELD，因此 element 可以直接转化为 VariableElement
-            VariableElement variableElement = (VariableElement) element;
-            //getEnclosingElement 方法返回封装此 Element 的最里层元素
-            //如果 Element 直接封装在另一个元素的声明中，则返回该封装元素
-            //此处表示的即 Java 类对象
-            TypeElement typeElement = (TypeElement) variableElement.getEnclosingElement();
-            List<VariableElement> variableElementList = elementListHashMap.get(typeElement);
-            if (variableElementList == null) {
-                variableElementList = new ArrayList<>();
-                elementListHashMap.put(typeElement, variableElementList);
+            TypeElement typeElement = (TypeElement) element;
+            List<? extends Element> enclosedElements = typeElement.getEnclosedElements();
+            if (enclosedElements != null && enclosedElements.size() > 0) {
+                for (Element enclosedElement : enclosedElements) {
+                    if (enclosedElement instanceof VariableElement) {
+                        if (checkModifier(enclosedElement.getModifiers())) {
+                            List<VariableElement> variableElementList = elementListHashMap.get(typeElement);
+                            if (variableElementList == null) {
+                                variableElementList = new ArrayList<>();
+                                elementListHashMap.put(typeElement, variableElementList);
+                            }
+                            variableElementList.add((VariableElement) enclosedElement);
+                        }
+                    }
+                }
             }
-            //将每个包含了 Preferences 注解的字段对象保存起来
-            variableElementList.add(variableElement);
         }
         for (TypeElement key : elementListHashMap.keySet()) {
             List<VariableElement> variableElementList = elementListHashMap.get(key);
@@ -97,6 +100,19 @@ public class PreferencesProcessor extends AbstractProcessor {
                 javaFile.writeTo(processingEnv.getFiler());
             } catch (IOException e) {
                 e.printStackTrace();
+            }
+        }
+        return true;
+    }
+
+    private boolean checkModifier(Set<Modifier> modifiers) {
+        for (Modifier modifier : modifiers) {
+            switch (modifier) {
+                case ABSTRACT:
+                case STATIC:
+                case FINAL: {
+                    return false;
+                }
             }
         }
         return true;

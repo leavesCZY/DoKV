@@ -10,8 +10,8 @@ import java.lang.annotation.Target;
  * Time：2019/1/3 17:33
  * Desc：
  */
-@Retention(RetentionPolicy.CLASS)
-@Target(ElementType.FIELD)
+@Retention(RetentionPolicy.SOURCE)
+@Target(ElementType.TYPE)
 public @interface Preferences {
 
 }

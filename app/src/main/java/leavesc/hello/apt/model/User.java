@@ -14,20 +14,17 @@ import leavesc.hello.apt_annotation.Preferences;
  * GitHub：https://github.com/leavesC
  * Blog：https://www.jianshu.com/u/9df45b87cfdf
  */
+@Preferences
 public class User {
 
-    @Preferences
     private String name;
 
-    @Preferences
     private int age;
 
     private String sex;
 
-    @Preferences
     private Book book;
 
-    @Preferences
     private List<String> stringList;
 
     public String getName() {
