@@ -47,6 +47,8 @@ public class PreferencesProcessor extends AbstractProcessor {
 
     private static final String INSTANCE = "INSTANCE";
 
+    private static final String KEY_NAME = "KEY";
+
     private static final ClassName serializeManagerClass = ClassName.get(DoKV.class);
 
     @Override
@@ -116,12 +118,12 @@ public class PreferencesProcessor extends AbstractProcessor {
                 .addType(generateInstanceHolderClass(typeElement))
                 .addMethod(generateInstanceHolderMethod(typeElement))
                 .addMethod(generateGetPreferencesHolderMethod())
-                .addMethod(generateSerializeMethod(generateKeyField(typeElement), typeElement))
-                .addMethod(generateDeserializeMethod(generateKeyField(typeElement), typeElement))
+                .addMethod(generateSerializeMethod(typeElement))
+                .addMethod(generateDeserializeMethod(typeElement))
                 .addMethod(generateGetInstanceMethod(typeElement))
                 .addMethod(generateGetInstanceNotNullMethod(typeElement))
                 .addMethod(generateSetInstanceMethod(typeElement))
-                .addMethod(generateRemoveKeyMethod(typeElement));
+                .addMethod(generateRemoveKeyMethod());
         for (VariableElement variableElement : variableElementList) {
             builder.addMethod(generateGetFieldMethod(typeElement, variableElement));
             builder.addMethod(generateSetFieldMethod(typeElement, variableElement));
@@ -136,9 +138,9 @@ public class PreferencesProcessor extends AbstractProcessor {
      * @return
      */
     private FieldSpec generateKeyField(TypeElement typeElement) {
-        return FieldSpec.builder(String.class, "KEY")
+        return FieldSpec.builder(String.class, KEY_NAME)
                 .addModifiers(Modifier.PRIVATE, Modifier.STATIC, Modifier.FINAL)
-                .initializer("\"" + typeElement.getQualifiedName().toString() + SUFFIX + "\"")
+                .initializer(CodeBlock.builder().addStatement("$S", typeElement.getQualifiedName().toString() + SUFFIX).build())
                 .build();
     }
 
@@ -208,18 +210,18 @@ public class PreferencesProcessor extends AbstractProcessor {
      *
      * @return IPreferencesHolder
      */
-    private MethodSpec generateSerializeMethod(FieldSpec key, TypeElement parameter) {
+    private MethodSpec generateSerializeMethod(TypeElement parameter) {
         //方法名
         String methodName = "serialize";
         //方法参数名
-        String keyName = "_" + key.name;
-        String fieldName = "_object";
+        String keyName = "_" + KEY_NAME;
+        String instanceName = "_" + ElementUtils.getEnclosingClassName(parameter);
         MethodSpec.Builder builder = MethodSpec.methodBuilder(methodName)
                 .addModifiers(Modifier.PRIVATE)
                 .returns(String.class)
-                .addParameter(key.type, keyName)
-                .addParameter(ClassName.get(parameter.asType()), fieldName)
-                .addStatement("return getPreferencesHolder().serialize($L, $L)", keyName, fieldName);
+                .addParameter(String.class, keyName)
+                .addParameter(ClassName.get(parameter.asType()), instanceName)
+                .addStatement("return getPreferencesHolder().serialize($L, $L)", keyName, instanceName);
         return builder.build();
     }
 
@@ -228,15 +230,15 @@ public class PreferencesProcessor extends AbstractProcessor {
      *
      * @return MethodSpec
      */
-    private MethodSpec generateDeserializeMethod(FieldSpec key, TypeElement parameter) {
+    private MethodSpec generateDeserializeMethod(TypeElement parameter) {
         //方法名
         String methodName = "deserialize";
         //方法参数名
-        String keyName = "_" + key.name;
+        String keyName = "_" + KEY_NAME;
         MethodSpec.Builder builder = MethodSpec.methodBuilder(methodName)
                 .addModifiers(Modifier.PRIVATE)
                 .returns(ClassName.get(parameter))
-                .addParameter(key.type, keyName)
+                .addParameter(String.class, keyName)
                 .addStatement("return getPreferencesHolder().deserialize($L, $L.class)", keyName, ElementUtils.getEnclosingClassName(parameter));
         return builder.build();
     }
@@ -255,7 +257,7 @@ public class PreferencesProcessor extends AbstractProcessor {
         MethodSpec.Builder builder = MethodSpec.methodBuilder(methodName)
                 .addModifiers(Modifier.PUBLIC)
                 .returns(ClassName.get(typeElement.asType()))
-                .addStatement("return deserialize($L)", generateKeyField(typeElement).name);
+                .addStatement("return deserialize($L)", KEY_NAME);
         return builder.build();
     }
 
@@ -273,7 +275,7 @@ public class PreferencesProcessor extends AbstractProcessor {
         MethodSpec.Builder builder = MethodSpec.methodBuilder(methodName)
                 .addModifiers(Modifier.PRIVATE)
                 .returns(ClassName.get(typeElement.asType()))
-                .addStatement("$L variable = deserialize($L)", enclosingClassName, generateKeyField(typeElement).name)
+                .addStatement("$L variable = deserialize($L)", enclosingClassName, KEY_NAME)
                 .addStatement("if(variable != null) { return variable; } return new $L()", enclosingClassName);
         return builder.build();
     }
@@ -296,7 +298,7 @@ public class PreferencesProcessor extends AbstractProcessor {
                 .returns(String.class)
                 .addParameter(ClassName.get(typeElement.asType()), fieldName)
                 .addStatement("if($L == null) { remove(); return \"\"; }", fieldName)
-                .addStatement("return serialize($L,$L)", generateKeyField(typeElement).name, fieldName);
+                .addStatement("return serialize($L,$L)", KEY_NAME, fieldName);
         return builder.build();
     }
 
@@ -305,13 +307,13 @@ public class PreferencesProcessor extends AbstractProcessor {
      *
      * @return
      */
-    private MethodSpec generateRemoveKeyMethod(TypeElement typeElement) {
+    private MethodSpec generateRemoveKeyMethod() {
         //方法名
         String methodName = "remove";
         MethodSpec.Builder builder = MethodSpec.methodBuilder(methodName)
                 .addModifiers(Modifier.PUBLIC)
                 .returns(void.class)
-                .addStatement("getPreferencesHolder().remove($L)", generateKeyField(typeElement).name);
+                .addStatement("getPreferencesHolder().remove($L)", KEY_NAME);
         return builder.build();
     }
 
@@ -327,9 +329,8 @@ public class PreferencesProcessor extends AbstractProcessor {
         String enclosingClassName = ElementUtils.getEnclosingClassName(typeElement);
         //字段名
         String fieldName = variableElement.getSimpleName().toString();
-        String upperCaseFieldName = StringUtils.toUpperCaseFirstChar(fieldName);
         //方法名
-        String methodName = "get" + upperCaseFieldName;
+        String methodName = "get" + StringUtils.toUpperCaseFirstChar(fieldName);
         //方法名
         String getInstanceMethodName = "get" + StringUtils.toUpperCaseFirstChar(ElementUtils.getEnclosingClassName(typeElement)) + "()";
         MethodSpec.Builder builder = MethodSpec.methodBuilder(methodName)
@@ -364,12 +365,12 @@ public class PreferencesProcessor extends AbstractProcessor {
         MethodSpec.Builder builder = MethodSpec.methodBuilder(setMethodName)
                 .addModifiers(Modifier.PUBLIC)
                 .returns(void.class)
-                .addParameter(ClassName.get(variableElement.asType()), fieldName)
+                .addParameter(ClassName.get(variableElement.asType()), "_" + fieldName)
                 .addAnnotation(Override.class)
-                .addStatement("super.$L($L)", setMethodName, fieldName)
+                .addStatement("super.$L($L)", setMethodName, "_" + fieldName)
                 .addStatement("$L $L = $L", enclosingClassName, serializeObjName, methodName)
                 .addStatement("$L.$L(super.$L())", serializeObjName, setMethodName, getMethodName)
-                .addStatement("serialize($L,$L)", generateKeyField(typeElement).name, serializeObjName);
+                .addStatement("serialize($L,$L)", KEY_NAME, serializeObjName);
         return builder.build();
     }
 
