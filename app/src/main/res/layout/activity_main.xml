@@ -30,7 +30,7 @@
             android:id="@+id/et_userSex"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="性别（不会被保存）" />
+            android:hint="性别" />
 
         <EditText
             android:id="@+id/et_bookName"
