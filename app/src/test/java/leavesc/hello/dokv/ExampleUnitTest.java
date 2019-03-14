@@ -1,4 +1,4 @@
-package leavesc.hello.apt;
+package leavesc.hello.dokv;
 
 import org.junit.Test;
 

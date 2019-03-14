@@ -1,4 +1,4 @@
-package leavesc.hello.apt;
+package leavesc.hello.dokv;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -11,9 +11,9 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
-import leavesc.hello.apt.model.Book;
-import leavesc.hello.apt.model.User;
-import leavesc.hello.apt.model.UserPreferences;
+import leavesc.hello.dokv.model.Book;
+import leavesc.hello.dokv.model.User;
+import leavesc.hello.dokv.model.UserPreferences;
 
 /**
  * 作者：leavesC

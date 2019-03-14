@@ -1,10 +1,10 @@
-package leavesc.hello.apt;
+package leavesc.hello.dokv;
 
 import android.app.Application;
 
 import com.tencent.mmkv.MMKV;
 
-import leavesc.hello.apt_annotation.DoKV;
+import leavesc.hello.dokv_annotation.DoKV;
 
 /**
  * 作者：leavesC

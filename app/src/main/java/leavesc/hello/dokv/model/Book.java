@@ -1,4 +1,4 @@
-package leavesc.hello.apt.model;
+package leavesc.hello.dokv.model;
 
 import android.support.annotation.NonNull;
 

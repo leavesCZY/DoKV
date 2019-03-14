@@ -1,4 +1,4 @@
-package leavesc.hello.apt_annotation;
+package leavesc.hello.dokv_annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

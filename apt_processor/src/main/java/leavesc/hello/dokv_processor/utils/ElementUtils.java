@@ -1,4 +1,4 @@
-package leavesc.hello.apt_processor.utils;
+package leavesc.hello.dokv_processor.utils;
 
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.util.Elements;

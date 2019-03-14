@@ -1,11 +1,11 @@
-package leavesc.hello.apt;
+package leavesc.hello.dokv;
 
 import android.text.TextUtils;
 
 import com.google.gson.Gson;
 import com.tencent.mmkv.MMKV;
 
-import leavesc.hello.apt_annotation.IPreferencesHolder;
+import leavesc.hello.dokv_annotation.IPreferencesHolder;
 
 /**
  * 作者：leavesC

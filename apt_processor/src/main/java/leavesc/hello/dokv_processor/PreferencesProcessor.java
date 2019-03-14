@@ -1,4 +1,4 @@
-package leavesc.hello.apt_processor;
+package leavesc.hello.dokv_processor;
 
 import com.google.auto.service.AutoService;
 import com.squareup.javapoet.ClassName;
@@ -27,11 +27,11 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.util.Elements;
 
-import leavesc.hello.apt_annotation.DoKV;
-import leavesc.hello.apt_annotation.IPreferencesHolder;
-import leavesc.hello.apt_annotation.Preferences;
-import leavesc.hello.apt_processor.utils.ElementUtils;
-import leavesc.hello.apt_processor.utils.StringUtils;
+import leavesc.hello.dokv_annotation.DoKV;
+import leavesc.hello.dokv_annotation.IPreferencesHolder;
+import leavesc.hello.dokv_annotation.Preferences;
+import leavesc.hello.dokv_processor.utils.ElementUtils;
+import leavesc.hello.dokv_processor.utils.StringUtils;
 
 /**
  * Created by：CZY

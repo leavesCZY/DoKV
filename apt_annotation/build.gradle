@@ -14,6 +14,6 @@ publish {
     groupId = 'leavesc.hello'
     artifactId = 'dokv'
     publishVersion = '0.1.5'
-    website = 'https://github.com/leavesC/Android_APT'
+    website = 'https://github.com/leavesC/Dokv'
     desc = 'An small mobile key-value storage framework'
 }

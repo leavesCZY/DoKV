@@ -1,4 +1,4 @@
-package leavesc.hello.apt;
+package leavesc.hello.dokv;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
@@ -21,6 +21,6 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getTargetContext();
 
-        assertEquals("leavesc.hello.apt", appContext.getPackageName());
+        assertEquals("leavesc.hello.dokv", appContext.getPackageName());
     }
 }

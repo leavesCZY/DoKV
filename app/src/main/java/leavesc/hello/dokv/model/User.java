@@ -1,11 +1,11 @@
-package leavesc.hello.apt.model;
+package leavesc.hello.dokv.model;
 
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
 import java.util.List;
 
-import leavesc.hello.apt_annotation.Preferences;
+import leavesc.hello.dokv_annotation.Preferences;
 
 /**
  * 作者：leavesC
