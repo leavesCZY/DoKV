@@ -1,9 +1,12 @@
-package leavesc.hello.dokv;
+package leavesc.hello.dokv_imp;
 
+import android.content.Context;
 import android.text.TextUtils;
 
 import com.google.gson.Gson;
 import com.tencent.mmkv.MMKV;
+
+import leavesc.hello.dokv.IDoKVHolder;
 
 /**
  * 作者：leavesC
@@ -14,9 +17,15 @@ import com.tencent.mmkv.MMKV;
  */
 public class MMKVDoKVHolder implements IDoKVHolder {
 
-    private MMKV mmkv = MMKV.defaultMMKV();
+    private MMKV mmkv;
 
-    private Gson gson = new Gson();
+    private Gson gson;
+
+    public MMKVDoKVHolder(Context context) {
+        MMKV.initialize(context);
+        mmkv = MMKV.defaultMMKV();
+        gson = new Gson();
+    }
 
     @Override
     public String serialize(String key, Object src) {

@@ -1,1 +1,1 @@
-include ':app', ':dokv_processor', ':dokv_annotation'
+include ':app', ':dokv_processor', ':dokv_annotation', ':dokv_impl'

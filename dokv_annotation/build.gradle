@@ -15,5 +15,5 @@ publish {
     artifactId = 'dokv'
     publishVersion = '0.1.5'
     website = 'https://github.com/leavesC/DoKV'
-    desc = 'An small mobile key-value storage framework'
+    desc = 'An small mobile key-value manage framework'
 }

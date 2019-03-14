@@ -2,7 +2,7 @@ package leavesc.hello.dokv;
 
 import android.app.Application;
 
-import com.tencent.mmkv.MMKV;
+import leavesc.hello.dokv_imp.MMKVDoKVHolder;
 
 /**
  * 作者：leavesC
@@ -16,8 +16,7 @@ public class MyApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        MMKV.initialize(this);
-        DoKV.init(new MMKVDoKVHolder());
+        DoKV.init(new MMKVDoKVHolder(this));
     }
 
 }
