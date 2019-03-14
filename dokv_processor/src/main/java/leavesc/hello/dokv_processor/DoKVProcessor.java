@@ -9,6 +9,7 @@ import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeSpec;
 
 import java.io.IOException;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -132,7 +133,7 @@ public class DoKVProcessor extends AbstractProcessor {
                 .addField(generateKeyField(typeElement))
                 .addMethod(generateConstructorMethod())
                 .addMethod(generateInstanceHolderMethod(typeElement))
-                .addMethod(generateGetDokvHolderMethod())
+                .addMethod(generateGetDoKVHolderMethod())
                 .addMethod(generateSerializeMethod(typeElement))
                 .addMethod(generateDeserializeMethod(typeElement))
                 .addMethod(generateGetInstanceMethod(typeElement))
@@ -155,7 +156,7 @@ public class DoKVProcessor extends AbstractProcessor {
     private FieldSpec generateKeyField(TypeElement typeElement) {
         return FieldSpec.builder(String.class, KEY_NAME)
                 .addModifiers(Modifier.PRIVATE, Modifier.STATIC, Modifier.FINAL)
-                .initializer(CodeBlock.builder().addStatement("$S", typeElement.getQualifiedName().toString() + SUFFIX).build())
+                .initializer(MessageFormat.format("\"{0}\"", typeElement.getQualifiedName().toString() + SUFFIX))
                 .build();
     }
 
@@ -213,7 +214,7 @@ public class DoKVProcessor extends AbstractProcessor {
      *
      * @return IDoKVHolder
      */
-    private MethodSpec generateGetDokvHolderMethod() {
+    private MethodSpec generateGetDoKVHolderMethod() {
         //方法名
         String methodName = "getDoKVHolder";
         MethodSpec.Builder builder = MethodSpec.methodBuilder(methodName)
@@ -315,7 +316,9 @@ public class DoKVProcessor extends AbstractProcessor {
                 .addModifiers(Modifier.PUBLIC)
                 .returns(String.class)
                 .addParameter(ClassName.get(typeElement.asType()), fieldName)
-                .addStatement("if($L == null) { remove(); return \"\"; }", fieldName)
+                .beginControlFlow("if($L == null)", fieldName)
+                .addStatement("remove(); return \"\"")
+                .endControlFlow()
                 .addStatement("return serialize($L,$L)", KEY_NAME, fieldName);
         return builder.build();
     }
@@ -374,8 +377,6 @@ public class DoKVProcessor extends AbstractProcessor {
         String upperCaseFieldName = StringUtils.toUpperCaseFirstChar(fieldName);
         //set方法名
         String setMethodName = "set" + upperCaseFieldName;
-        //get方法名
-        String getMethodName = "get" + upperCaseFieldName;
         //序列化对象名
         String serializeObjName = "_" + StringUtils.toLowerCaseFirstChar(enclosingClassName);
         //方法名
@@ -385,9 +386,8 @@ public class DoKVProcessor extends AbstractProcessor {
                 .returns(void.class)
                 .addParameter(ClassName.get(variableElement.asType()), "_" + fieldName)
                 .addAnnotation(Override.class)
-                .addStatement("super.$L($L)", setMethodName, "_" + fieldName)
                 .addStatement("$L $L = $L", enclosingClassName, serializeObjName, methodName)
-                .addStatement("$L.$L(super.$L())", serializeObjName, setMethodName, getMethodName)
+                .addStatement("$L.$L($L)", serializeObjName, setMethodName, "_" + fieldName)
                 .addStatement("serialize($L,$L)", KEY_NAME, serializeObjName);
         return builder.build();
     }
