@@ -17,6 +17,6 @@ publish {
     groupId = 'leavesc.hello'
     artifactId = 'dokv-compiler'
     publishVersion = '0.1.5'
-    website = 'https://github.com/leavesC/Dokv'
+    website = 'https://github.com/leavesC/DoKV'
     desc = 'An small mobile key-value storage framework'
 }

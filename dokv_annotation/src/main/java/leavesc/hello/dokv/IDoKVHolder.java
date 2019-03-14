@@ -1,4 +1,4 @@
-package leavesc.hello.dokv_annotation;
+package leavesc.hello.dokv;
 
 /**
  * 作者：leavesC
@@ -7,7 +7,7 @@ package leavesc.hello.dokv_annotation;
  * GitHub：https://github.com/leavesC
  * Blog：https://www.jianshu.com/u/9df45b87cfdf
  */
-public interface IPreferencesHolder {
+public interface IDoKVHolder {
 
     //序列化
     String serialize(String key, Object src);

@@ -27,9 +27,8 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.util.Elements;
 
-import leavesc.hello.dokv_annotation.DoKV;
-import leavesc.hello.dokv_annotation.IPreferencesHolder;
-import leavesc.hello.dokv_annotation.Preferences;
+import leavesc.hello.dokv.IDoKVHolder;
+import leavesc.hello.dokv.annotation.DoKV;
 import leavesc.hello.dokv_processor.utils.ElementUtils;
 import leavesc.hello.dokv_processor.utils.StringUtils;
 
@@ -39,17 +38,17 @@ import leavesc.hello.dokv_processor.utils.StringUtils;
  * Desc：
  */
 @AutoService(Processor.class)
-public class PreferencesProcessor extends AbstractProcessor {
+public class DoKVProcessor extends AbstractProcessor {
 
     private Elements elementUtils;
 
-    private static final String SUFFIX = "Preferences";
+    private static final String SUFFIX = "DoKV";
 
     private static final String INSTANCE = "INSTANCE";
 
     private static final String KEY_NAME = "KEY";
 
-    private static final ClassName serializeManagerClass = ClassName.get(DoKV.class);
+    private static final ClassName serializeManagerClass = ClassName.get(leavesc.hello.dokv.DoKV.class);
 
     @Override
     public synchronized void init(ProcessingEnvironment processingEnv) {
@@ -60,7 +59,7 @@ public class PreferencesProcessor extends AbstractProcessor {
     @Override
     public Set<String> getSupportedAnnotationTypes() {
         Set<String> hashSet = new HashSet<>();
-        hashSet.add(Preferences.class.getCanonicalName());
+        hashSet.add(DoKV.class.getCanonicalName());
         return hashSet;
     }
 
@@ -71,8 +70,8 @@ public class PreferencesProcessor extends AbstractProcessor {
 
     @Override
     public boolean process(Set<? extends TypeElement> set, RoundEnvironment roundEnvironment) {
-        //获取所有包含 Preferences 注解的元素
-        Set<? extends Element> elementSet = roundEnvironment.getElementsAnnotatedWith(Preferences.class);
+        //获取所有包含 DoKV 注解的元素
+        Set<? extends Element> elementSet = roundEnvironment.getElementsAnnotatedWith(DoKV.class);
         Map<TypeElement, List<VariableElement>> elementListHashMap = new HashMap<>();
         for (Element element : elementSet) {
             TypeElement typeElement = (TypeElement) element;
@@ -126,14 +125,14 @@ public class PreferencesProcessor extends AbstractProcessor {
      * @return
      */
     private TypeSpec generateCodeByPoet(TypeElement typeElement, List<VariableElement> variableElementList) {
-        //自动生成的文件以 Java 类名 + Preferences 进行命名
+        //自动生成的文件以 Java 类名 + DoKV 进行命名
         TypeSpec.Builder builder = TypeSpec.classBuilder(typeElement.getSimpleName().toString() + SUFFIX)
                 .addModifiers(Modifier.PUBLIC)
                 .superclass(ClassName.bestGuess(typeElement.getQualifiedName().toString()))
                 .addField(generateKeyField(typeElement))
                 .addMethod(generateConstructorMethod())
                 .addMethod(generateInstanceHolderMethod(typeElement))
-                .addMethod(generateGetPreferencesHolderMethod())
+                .addMethod(generateGetDokvHolderMethod())
                 .addMethod(generateSerializeMethod(typeElement))
                 .addMethod(generateDeserializeMethod(typeElement))
                 .addMethod(generateGetInstanceMethod(typeElement))
@@ -210,24 +209,24 @@ public class PreferencesProcessor extends AbstractProcessor {
     }
 
     /**
-     * 构造用于获取 IPreferencesHolder 实例的方法
+     * 构造用于获取 IDoKVHolder 实例的方法
      *
-     * @return IPreferencesHolder
+     * @return IDoKVHolder
      */
-    private MethodSpec generateGetPreferencesHolderMethod() {
+    private MethodSpec generateGetDokvHolderMethod() {
         //方法名
-        String methodName = "getPreferencesHolder";
+        String methodName = "getDoKVHolder";
         MethodSpec.Builder builder = MethodSpec.methodBuilder(methodName)
                 .addModifiers(Modifier.PRIVATE)
-                .returns(IPreferencesHolder.class)
-                .addStatement("return $T.getInstance().getPreferencesHolder()", serializeManagerClass);
+                .returns(IDoKVHolder.class)
+                .addStatement("return $T.getInstance().getDoKVHolder()", serializeManagerClass);
         return builder.build();
     }
 
     /**
      * 构造用于序列化的方法
      *
-     * @return IPreferencesHolder
+     * @return IDoKVHolder
      */
     private MethodSpec generateSerializeMethod(TypeElement parameter) {
         //方法名
@@ -240,7 +239,7 @@ public class PreferencesProcessor extends AbstractProcessor {
                 .returns(String.class)
                 .addParameter(String.class, keyName)
                 .addParameter(ClassName.get(parameter.asType()), instanceName)
-                .addStatement("return getPreferencesHolder().serialize($L, $L)", keyName, instanceName);
+                .addStatement("return getDoKVHolder().serialize($L, $L)", keyName, instanceName);
         return builder.build();
     }
 
@@ -258,7 +257,7 @@ public class PreferencesProcessor extends AbstractProcessor {
                 .addModifiers(Modifier.PRIVATE)
                 .returns(ClassName.get(parameter))
                 .addParameter(String.class, keyName)
-                .addStatement("return getPreferencesHolder().deserialize($L, $L.class)", keyName, ElementUtils.getEnclosingClassName(parameter));
+                .addStatement("return getDoKVHolder().deserialize($L, $L.class)", keyName, ElementUtils.getEnclosingClassName(parameter));
         return builder.build();
     }
 
@@ -332,15 +331,15 @@ public class PreferencesProcessor extends AbstractProcessor {
         MethodSpec.Builder builder = MethodSpec.methodBuilder(methodName)
                 .addModifiers(Modifier.PUBLIC)
                 .returns(void.class)
-                .addStatement("getPreferencesHolder().remove($L)", KEY_NAME);
+                .addStatement("getDoKVHolder().remove($L)", KEY_NAME);
         return builder.build();
     }
 
     /**
-     * 重写包含 Preferences 注解的字段的 Get 方法
+     * 重写包含 DoKV 注解的字段的 Get 方法
      *
      * @param typeElement     注解对象上层元素对象，即 Java 对象
-     * @param variableElement 包含 Preferences 注解的字段
+     * @param variableElement 包含 DoKV 注解的字段
      * @return
      */
     private MethodSpec generateGetFieldMethod(TypeElement typeElement, VariableElement variableElement) {
@@ -362,9 +361,9 @@ public class PreferencesProcessor extends AbstractProcessor {
     }
 
     /**
-     * 重写包含 Preferences 注解的字段的 Set 方法
+     * 重写包含 DoKV 注解的字段的 Set 方法
      *
-     * @param variableElement 包含 Preferences 注解的字段
+     * @param variableElement 包含 DoKV 注解的字段
      * @return
      */
     private MethodSpec generateSetFieldMethod(TypeElement typeElement, VariableElement variableElement) {

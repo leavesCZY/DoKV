@@ -4,8 +4,6 @@ import android.app.Application;
 
 import com.tencent.mmkv.MMKV;
 
-import leavesc.hello.dokv_annotation.DoKV;
-
 /**
  * 作者：leavesC
  * 时间：2019/1/5 1:06
@@ -19,7 +17,7 @@ public class MyApplication extends Application {
     public void onCreate() {
         super.onCreate();
         MMKV.initialize(this);
-        DoKV.init(new PreferencesMMKVHolder());
+        DoKV.init(new MMKVDoKVHolder());
     }
 
 }

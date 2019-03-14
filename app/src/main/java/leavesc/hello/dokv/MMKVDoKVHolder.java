@@ -5,8 +5,6 @@ import android.text.TextUtils;
 import com.google.gson.Gson;
 import com.tencent.mmkv.MMKV;
 
-import leavesc.hello.dokv_annotation.IPreferencesHolder;
-
 /**
  * 作者：leavesC
  * 时间：2019/1/5 1:05
@@ -14,7 +12,7 @@ import leavesc.hello.dokv_annotation.IPreferencesHolder;
  * GitHub：https://github.com/leavesC
  * Blog：https://www.jianshu.com/u/9df45b87cfdf
  */
-public class PreferencesMMKVHolder implements IPreferencesHolder {
+public class MMKVDoKVHolder implements IDoKVHolder {
 
     private MMKV mmkv = MMKV.defaultMMKV();
 

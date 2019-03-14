@@ -5,7 +5,7 @@ import android.text.TextUtils;
 
 import java.util.List;
 
-import leavesc.hello.dokv_annotation.Preferences;
+import leavesc.hello.dokv.annotation.DoKV;
 
 /**
  * 作者：leavesC
@@ -14,7 +14,7 @@ import leavesc.hello.dokv_annotation.Preferences;
  * GitHub：https://github.com/leavesC
  * Blog：https://www.jianshu.com/u/9df45b87cfdf
  */
-@Preferences
+@DoKV
 public class User {
 
     private String name;
@@ -28,7 +28,7 @@ public class User {
     private List<String> stringList;
 
     public String getName() {
-        //可以在 get 和 set 方法写一些计算逻辑，Dokv 在保存和获取字段值前都会走一遍 super 方法
+        //可以在 get 和 set 方法写一些计算逻辑，DoKV 在保存和获取字段值前都会走一遍 super 方法
         if (TextUtils.isEmpty(name)) {
             return "default name";
         }

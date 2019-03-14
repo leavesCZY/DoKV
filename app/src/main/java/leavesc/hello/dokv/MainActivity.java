@@ -13,7 +13,7 @@ import java.util.List;
 
 import leavesc.hello.dokv.model.Book;
 import leavesc.hello.dokv.model.User;
-import leavesc.hello.dokv.model.UserPreferences;
+import leavesc.hello.dokv.model.UserDoKV;
 
 /**
  * 作者：leavesC
@@ -70,26 +70,26 @@ public class MainActivity extends AppCompatActivity {
                 Book book = new Book();
                 book.setName(et_bookName.getText().toString());
                 user.setBook(book);
-                UserPreferences.get().setUser(user);
+                UserDoKV.get().setUser(user);
             }
         });
         btn_serializeSingle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String userName = et_singleUserName.getText().toString();
-                UserPreferences.get().setName(userName);
+                UserDoKV.get().setName(userName);
             }
         });
         btn_remove.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                UserPreferences.get().remove();
+                UserDoKV.get().remove();
             }
         });
         btn_print.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                User user = UserPreferences.get().getUser();
+                User user = UserDoKV.get().getUser();
                 if (user == null) {
                     tv_hint.setText("null");
                 } else {
@@ -97,7 +97,7 @@ public class MainActivity extends AppCompatActivity {
                 }
 
                 tv_hint.append("\n");
-                tv_hint.append("Name：" + UserPreferences.get().getName());
+                tv_hint.append("Name：" + UserDoKV.get().getName());
             }
         });
     }
