@@ -1,1 +1,1 @@
-include ':app', ':apt_processor', ':apt_annotation'
+include ':app', ':dokv_processor', ':dokv_annotation'
