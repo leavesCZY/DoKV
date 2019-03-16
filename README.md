@@ -4,7 +4,7 @@ DoKV 是一个小巧而强大的 **Key-Value** 管理框架，其设计初衷是
 
 ### 一、介绍
 
-之所以说小巧，是因为 DoKV 的实现仅依赖于**一个注解、一个接口、四个类**。当然，其实现基础不仅仅如此，还需要 APT 技术的支持，关于 APT 的知识我在以前的一篇博客中也有所介绍，点击查看：[APT](https://github.com/leavesC/DoKV/blob/master/README.md) 
+之所以说小巧，是因为 DoKV 的实现仅依赖于**一个注解、一个接口、四个类**。当然，其实现基础不仅仅如此，还需要 APT 技术的支持，关于 APT 的知识我在以前的一篇博客中也有所介绍，点击查看：[APT](https://www.jianshu.com/p/cc8379522c5e) 
 
 ![](https://upload-images.jianshu.io/upload_images/2552605-c5119a7ba7544e72.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
