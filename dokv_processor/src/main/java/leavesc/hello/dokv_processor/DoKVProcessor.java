@@ -34,9 +34,11 @@ import leavesc.hello.dokv_processor.utils.ElementUtils;
 import leavesc.hello.dokv_processor.utils.StringUtils;
 
 /**
- * Created by：CZY
- * Time：2019/1/3 17:35
- * Desc：
+ * 作者：leavesC
+ * 时间：2019/1/3 17:35
+ * 描述：
+ * GitHub：https://github.com/leavesC
+ * Blog：https://www.jianshu.com/u/9df45b87cfdf
  */
 @AutoService(Processor.class)
 public class DoKVProcessor extends AbstractProcessor {
