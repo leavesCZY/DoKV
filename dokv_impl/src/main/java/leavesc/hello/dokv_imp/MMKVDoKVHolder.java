@@ -48,4 +48,9 @@ public class MMKVDoKVHolder implements IDoKVHolder {
         mmkv.remove(key);
     }
 
+    @Override
+    public void clear() {
+        mmkv.clear();
+    }
+
 }

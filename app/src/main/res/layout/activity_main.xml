@@ -16,13 +16,13 @@
             android:id="@+id/et_userName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="用户名" />
+            android:hint="name" />
 
         <EditText
             android:id="@+id/et_userAge"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="用户年龄"
+            android:hint="age"
             android:inputType="number"
             android:maxLength="5" />
 
@@ -30,19 +30,19 @@
             android:id="@+id/et_userSex"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="性别" />
+            android:hint="sex" />
 
         <EditText
             android:id="@+id/et_bookName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="书名" />
+            android:hint="book name" />
 
         <Button
             android:id="@+id/btn_serializeAll"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="序列化整个对象"
+            android:text="将数据序列化保存"
             android:textAllCaps="false" />
 
         <EditText
@@ -50,28 +50,37 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="30dp"
-            android:hint="用户名" />
+            android:hint="name" />
 
         <Button
             android:id="@+id/btn_serializeSingle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="序列化单个参数"
+            android:text="修改序缓存数据的单个参数值（如果无缓存数据，则会自动new一个新的对象）"
             android:textAllCaps="false" />
 
         <Button
             android:id="@+id/btn_remove"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
-            android:text="移除序列化对象"
+            android:layout_marginTop="10dp"
+            android:text="移除指定key的缓存数据"
+            android:textAllCaps="false" />
+
+        <Button
+            android:id="@+id/btn_clear"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="移除所有缓存数据"
             android:textAllCaps="false" />
 
         <Button
             android:id="@+id/btn_print"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="打印序列化的对象"
+            android:layout_marginTop="10dp"
+            android:text="打印缓存数据"
             android:textAllCaps="false" />
 
         <TextView

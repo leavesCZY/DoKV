@@ -1,8 +1,31 @@
-## DoKV
+### DoKV
 
 DoKV 是一个小巧而强大的 **Key-Value** 管理框架，其设计初衷是为了解决 Android 平台下各种**繁琐且丑陋**的配置类代码
 
 **（如果你是从我的博客：[Android APT 实例讲解](https://www.jianshu.com/p/cc8379522c5e) 跳转过来的，那需要切换到 master 分支，对应的是第二次的提交记录）**
+
+
+
+### Download
+
+```groovy
+dependencies {
+    implementation 'leavesc.hello:dokv:0.1.8'
+    annotationProcessor 'leavesc.hello:dokv-compiler:0.1.8'
+}
+```
+
+如果不想自定义序列化方案，则可以使用我的另一个开源实现
+
+```groovy
+dependencies {
+    implementation 'leavesc.hello:dokv-impl:0.1.8'
+}
+```
+
+更新日记：[CHANGELOG](CHANGELOG.md)
+
+
 
 ### 一、介绍
 
@@ -75,6 +98,9 @@ public class User {
 
         //移除缓存数据
         UserDoKV.get().remove();
+
+        //移除所有缓存数据
+        DoKV.clear();
 ```
 
 上文说过，DoKV 是依赖于 APT 技术的，其实际原理就是开发者通过继承 AbstractProcessor 来定义目标代码的生成规则，由编译器根据此规则来生成目标代码，所以 DoKv 的执行效率就如同构造一般的 Java 类，不存在什么依靠反射使性能降低的情况
@@ -149,14 +175,42 @@ public class UserDoKV extends User {
 }
 ```
 
-### 二、引入
+
+
+### 二、自定义缓存 Key
+
+在 v0.1.7 版本之前， **DoKV** 默认以**被注解类的类路径**作为缓存 Key，以此来保证 Key 值的唯一性，但考虑到被注解类在后续开发中可能会被移动到其它包下从而导致丢失缓存数据，因为在 v0.1.7 版本中为注解 DoKV 新增了 Key 属性，如果开发者向该属性赋予了值，则以该值作为缓存 Key，而且该 Key 的唯一性需要由开发者自己来保证
+
+```java
+@DoKV(key = "CustomKeyUser_Key")
+public class CustomKeyUser {
+
+   ···
+
+}
+```
+
+```java
+public class CustomKeyUserDoKV extends CustomKeyUser {
+
+    private static final String KEY = "CustomKeyUser_Key";
+
+
+    ```
+
+}
+```
+
+
+
+### 三、引入
 
 为了获得更高的自由度， DoKV 默认将数据持久化的实现方案交由外部来实现，即由使用者来决定如何将对象序列化保存到本地，此时你就可以选择只依赖以下两个引用
 
 ```groovy
 dependencies {
-    implementation 'leavesc.hello:dokv:0.1.6'
-    annotationProcessor 'leavesc.hello:dokv-compiler:0.1.6'
+    implementation 'leavesc.hello:dokv:xxx'
+    annotationProcessor 'leavesc.hello:dokv-compiler:xxx'
 }
 ```
 
@@ -182,24 +236,32 @@ dependencies {
             public void remove(String key) {
 
             }
+
+            //删除全局的缓存数据
+            @Override
+            public void clear() {
+
+            }
         });
 ```
 
 如果你不想自己实现 IDoKVHolder ，DoKV 也提供了一个默认实现，此时你就只要多引用如下一个依赖即可，其内部是通过 **Gson + MMKV** 来实现序列化方案
 
-```java
+```groovy
 dependencies {
-    implementation 'leavesc.hello:dokv-impl:0.1.6'
+    implementation 'leavesc.hello:dokv-impl:xxx'
 }
 ```
 
 进行初始化，之后就可以自由地玩耍了
 
 ```java
-DoKV.init(new MMKVDoKVHolder(Context));
+    DoKV.init(new MMKVDoKVHolder(Context));
 ```
 
-### 三、结尾
+
+
+### 四、结尾
 
 本开源库的 GitHub 主页在这里：[DoKV](https://github.com/leavesC/DoKV)
 

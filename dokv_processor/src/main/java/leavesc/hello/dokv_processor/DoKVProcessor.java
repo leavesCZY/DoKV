@@ -156,9 +156,14 @@ public class DoKVProcessor extends AbstractProcessor {
      * @return
      */
     private FieldSpec generateKeyField(TypeElement typeElement) {
+        DoKV doKV = typeElement.getAnnotation(DoKV.class);
+        String key = doKV.key();
+        if (key.length() == 0) {
+            key = typeElement.getQualifiedName().toString() + SUFFIX;
+        }
         return FieldSpec.builder(String.class, KEY_NAME)
                 .addModifiers(Modifier.PRIVATE, Modifier.STATIC, Modifier.FINAL)
-                .initializer(MessageFormat.format("\"{0}\"", typeElement.getQualifiedName().toString() + SUFFIX))
+                .initializer(MessageFormat.format("\"{0}\"", key))
                 .build();
     }
 

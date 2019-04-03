@@ -21,6 +21,10 @@ public enum DoKV {
         getInstance().doKVHolder = doKVHolder;
     }
 
+    public static void clear() {
+        getInstance().doKVHolder.clear();
+    }
+
     public IDoKVHolder getDoKVHolder() {
         return doKVHolder;
     }

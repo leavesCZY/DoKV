@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import leavesc.hello.dokv.model.Book;
+import leavesc.hello.dokv.model.CustomKeyUserDoKV;
 import leavesc.hello.dokv.model.User;
 import leavesc.hello.dokv.model.UserDoKV;
 
@@ -39,6 +40,8 @@ public class MainActivity extends AppCompatActivity {
     private Button btn_serializeSingle;
 
     private Button btn_remove;
+
+    private Button btn_clear;
 
     private Button btn_print;
 
@@ -86,20 +89,28 @@ public class MainActivity extends AppCompatActivity {
                 UserDoKV.get().remove();
             }
         });
+        btn_clear.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DoKV.clear();
+            }
+        });
         btn_print.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                User user = UserDoKV.get().getUser();
-                if (user == null) {
-                    tv_hint.setText("null");
-                } else {
-                    tv_hint.setText(user.toString());
-                }
+                StringBuilder sb = new StringBuilder();
+                sb.append("User : ----->").append(UserDoKV.get().getUser());
+                sb.append("\n\n");
+                sb.append("User Name : ----->").append(UserDoKV.get().getName());
 
-                tv_hint.append("\n");
-                tv_hint.append("Name：" + UserDoKV.get().getName());
+                sb.append("\n\n");
+                sb.append("CustomKeyUser : ----->").append(CustomKeyUserDoKV.get().getCustomKeyUser());
+
+                tv_hint.setText(sb);
             }
         });
+
+        CustomKeyUserDoKV.get().setKey("这是默认赋予的值");
     }
 
     private void initView() {
@@ -111,6 +122,7 @@ public class MainActivity extends AppCompatActivity {
         et_singleUserName = findViewById(R.id.et_singleUserName);
         btn_serializeSingle = findViewById(R.id.btn_serializeSingle);
         btn_remove = findViewById(R.id.btn_remove);
+        btn_clear = findViewById(R.id.btn_clear);
         btn_print = findViewById(R.id.btn_print);
         tv_hint = findViewById(R.id.tv_hint);
     }

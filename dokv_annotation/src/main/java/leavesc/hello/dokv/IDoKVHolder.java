@@ -18,4 +18,7 @@ public interface IDoKVHolder {
     //移除指定对象
     void remove(String key);
 
+    //删除全局的缓存数据
+    void clear();
+
 }
