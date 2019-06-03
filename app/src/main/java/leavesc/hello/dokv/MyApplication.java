@@ -1,7 +1,6 @@
 package leavesc.hello.dokv;
 
 import android.app.Application;
-
 import leavesc.hello.dokv_imp.MMKVDoKVHolder;
 
 /**
@@ -17,6 +16,7 @@ public class MyApplication extends Application {
     public void onCreate() {
         super.onCreate();
         DoKV.init(new MMKVDoKVHolder(this));
+//        MMKV.initialize(this);
     }
 
 }

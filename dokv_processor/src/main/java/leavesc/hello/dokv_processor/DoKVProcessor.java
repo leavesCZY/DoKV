@@ -1,21 +1,11 @@
 package leavesc.hello.dokv_processor;
 
 import com.google.auto.service.AutoService;
-import com.squareup.javapoet.ClassName;
-import com.squareup.javapoet.CodeBlock;
-import com.squareup.javapoet.FieldSpec;
-import com.squareup.javapoet.JavaFile;
-import com.squareup.javapoet.MethodSpec;
-import com.squareup.javapoet.TypeSpec;
-
-import java.io.IOException;
-import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import com.squareup.javapoet.*;
+import leavesc.hello.dokv.IDoKVHolder;
+import leavesc.hello.dokv.annotation.DoKV;
+import leavesc.hello.dokv_processor.utils.ElementUtils;
+import leavesc.hello.dokv_processor.utils.StringUtils;
 
 import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.ProcessingEnvironment;
@@ -27,11 +17,9 @@ import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.util.Elements;
-
-import leavesc.hello.dokv.IDoKVHolder;
-import leavesc.hello.dokv.annotation.DoKV;
-import leavesc.hello.dokv_processor.utils.ElementUtils;
-import leavesc.hello.dokv_processor.utils.StringUtils;
+import java.io.IOException;
+import java.text.MessageFormat;
+import java.util.*;
 
 /**
  * 作者：leavesC
@@ -265,7 +253,7 @@ public class DoKVProcessor extends AbstractProcessor {
                 .addModifiers(Modifier.PRIVATE)
                 .returns(ClassName.get(parameter))
                 .addParameter(String.class, keyName)
-                .addStatement("return getDoKVHolder().deserialize($L, $L.class)", keyName, ElementUtils.getEnclosingClassName(parameter));
+                .addStatement("return ($L) getDoKVHolder().deserialize($L, $L.class)", ElementUtils.getEnclosingClassName(parameter), keyName, ElementUtils.getEnclosingClassName(parameter));
         return builder.build();
     }
 

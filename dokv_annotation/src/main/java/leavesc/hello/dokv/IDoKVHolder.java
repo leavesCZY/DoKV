@@ -7,13 +7,13 @@ package leavesc.hello.dokv;
  * GitHub：https://github.com/leavesC
  * Blog：https://www.jianshu.com/u/9df45b87cfdf
  */
-public interface IDoKVHolder {
+public interface IDoKVHolder<E> {
 
     //序列化
-    String serialize(String key, Object src);
+    <T extends E> String serialize(String key, T src);
 
     //反序列化
-    <T> T deserialize(String key, Class<T> classOfT);
+    <T extends E> T deserialize(String key, Class<T> classOfT);
 
     //移除指定对象
     void remove(String key);
