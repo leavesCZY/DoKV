@@ -1,10 +1,11 @@
 package leavesc.hello.dokv.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
+import leavesc.hello.dokv.annotation.DoKV;
 
 import java.util.List;
-
-import leavesc.hello.dokv.annotation.DoKV;
 
 /**
  * 作者：leavesC
@@ -14,7 +15,7 @@ import leavesc.hello.dokv.annotation.DoKV;
  * Blog：https://www.jianshu.com/u/9df45b87cfdf
  */
 @DoKV
-public class User {
+public class User implements Parcelable {
 
     private String name;
 
@@ -78,4 +79,41 @@ public class User {
                 '}';
     }
 
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.name);
+        dest.writeInt(this.age);
+        dest.writeString(this.sex);
+        dest.writeParcelable(this.book, flags);
+        dest.writeStringList(this.stringList);
+    }
+
+    public User() {
+    }
+
+    protected User(Parcel in) {
+        this.name = in.readString();
+        this.age = in.readInt();
+        this.sex = in.readString();
+        this.book = in.readParcelable(Book.class.getClassLoader());
+        this.stringList = in.createStringArrayList();
+    }
+
+    public static final Parcelable.Creator<User> CREATOR = new Parcelable.Creator<User>() {
+        @Override
+        public User createFromParcel(Parcel source) {
+            return new User(source);
+        }
+
+        @Override
+        public User[] newArray(int size) {
+            return new User[size];
+        }
+    };
 }

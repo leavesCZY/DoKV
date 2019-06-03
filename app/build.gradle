@@ -31,4 +31,5 @@ dependencies {
     implementation project(':dokv_annotation')
     annotationProcessor project(':dokv_processor')
     implementation project(':dokv_impl')
+    implementation 'com.tencent:mmkv:1.0.18'
 }

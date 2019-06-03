@@ -9,11 +9,13 @@
           <set>
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/app" />
-            <option value="$PROJECT_DIR$/apt_annotation" />
-            <option value="$PROJECT_DIR$/apt_processor" />
+            <option value="$PROJECT_DIR$/dokv_annotation" />
+            <option value="$PROJECT_DIR$/dokv_impl" />
+            <option value="$PROJECT_DIR$/dokv_processor" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />
+        <option name="testRunner" value="PLATFORM" />
       </GradleProjectSettings>
     </option>
   </component>
